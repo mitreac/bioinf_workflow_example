@@ -1,0 +1,12 @@
+# Everything needed for the workshop in one conda environment.
+#     conda env create -f environment.yml
+#     conda activate bio-workflows
+name: bio-workflows
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python>=3.10
+  - snakemake>=8
+  - nextflow>=24.04
+  - pytest

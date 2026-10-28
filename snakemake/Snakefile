@@ -1,0 +1,76 @@
+# Snakemake version of the read quality workflow.
+#
+# Run from the repository folder:
+#     snakemake --snakefile snakemake/Snakefile --cores 2
+#
+# All paths below are relative to the folder where snakemake is started, not
+# to this file. We run from the repository folder so that the Snakemake and
+# Nextflow commands look the same and share data/ and scripts/.
+
+configfile: "snakemake/config.yaml"
+
+# glob_wildcards matches the pattern against the files on disk and returns
+# the values of {sample}: ["A", "B", "C"]. A new file in data/samples/ becomes
+# a new sample with no change to this file.
+SAMPLES = glob_wildcards("data/samples/{sample}.fastq").sample
+
+
+# Snakemake builds the files requested on the command line. If none are
+# given, it builds the input of the first rule. So the first rule only lists
+# the final result and has no command.
+rule all:
+    input:
+        "results/snakemake/summary.tsv",
+
+
+# Step 1: remove the reads with low quality.
+#
+# {sample} is a wildcard. When Snakemake needs
+# results/snakemake/filtered/A.filtered.fastq, it matches it against this
+# output pattern, sets sample="A", and fills in the input path.
+rule filter_reads:
+    input:
+        "data/samples/{sample}.fastq",
+    output:
+        "results/snakemake/filtered/{sample}.filtered.fastq",
+    # The threshold is a param, not written directly in the command. Snakemake
+    # stores params with each output, so changing min_quality marks these
+    # files as out of date and they are rebuilt.
+    params:
+        min_quality=config["min_quality"],
+    # One log file per sample. If a job fails, Snakemake prints the log path.
+    log:
+        "results/snakemake/logs/filter_{sample}.log",
+    # We call the scripts with shell: instead of script: so that Snakemake and
+    # Nextflow run exactly the same command. With script: the Python file
+    # would get a `snakemake` object with input, output and params, but then
+    # it could not be used outside Snakemake.
+    shell:
+        "python3 scripts/filter_reads.py --input {input} --output {output} "
+        "--min-quality {params.min_quality} 2> {log}"
+
+
+# Step 2: compute the statistics of each sample.
+rule read_stats:
+    input:
+        "results/snakemake/filtered/{sample}.filtered.fastq",
+    output:
+        "results/snakemake/stats/{sample}.stats.tsv",
+    # {wildcards.sample} gives the value of the wildcard inside the command.
+    shell:
+        "python3 scripts/read_stats.py --input {input} "
+        "--sample {wildcards.sample} --output {output}"
+
+
+# Step 3: merge the statistics of all samples in one table.
+#
+# expand() turns one pattern into a list of paths, one per sample. Because the
+# input is the full list, this rule runs once, after all read_stats jobs.
+# In the command, {input} becomes the paths separated by spaces.
+rule summarize:
+    input:
+        expand("results/snakemake/stats/{sample}.stats.tsv", sample=SAMPLES),
+    output:
+        "results/snakemake/summary.tsv",
+    shell:
+        "python3 scripts/summarize.py --output {output} {input}"

@@ -1,0 +1,10 @@
+# Settings for the Snakemake workflow, loaded with `configfile:` into the
+# `config` dictionary.
+#
+# Values can be changed here or on the command line, without editing the file:
+#     snakemake --snakefile snakemake/Snakefile --cores 2 --config min_quality=30
+
+# Reads with an average quality below this value are removed.
+# 20 is 1 error in 100 letters, 30 is 1 error in 1000.
+# With 30, sample C loses all its reads.
+min_quality: 20
