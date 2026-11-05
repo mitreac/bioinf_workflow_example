@@ -23,7 +23,7 @@ def summarize(stats_paths, output_path):
     # Sorting matters. Nextflow passes the files in the order the tasks
     # finished, which changes from run to run. Sorted rows give the same
     # output every time, so the Snakemake and Nextflow results can be
-    # compared with diff (see .github/workflows/test.yml).
+    # compared with diff.
     rows.sort()
 
     with open(output_path, "w") as out:
