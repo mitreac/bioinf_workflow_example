@@ -1,0 +1,12 @@
+# Snakemake-only environment for native Windows (no WSL).
+# Nextflow is left out: it does not run on native Windows.
+#     conda env create -f environment-windows.yml
+#     conda activate bio-workflows-snakemake
+name: bio-workflows-snakemake
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.13
+  - snakemake>=8
+  - pytest
