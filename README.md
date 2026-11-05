@@ -291,9 +291,6 @@ scripts/             Python scripts for each step
 snakemake/           Snakefile, config.yaml and the Snakemake tutorial
 nextflow/            main.nf, nextflow.config and the Nextflow tutorial
 tests/               tests for the scripts (pytest)
-.github/workflows/   runs the tests and both workflows on every push
-.devcontainer/       setup for GitHub Codespaces
-push_to_github.sh    creates a GitHub repository from this folder
 ```
 
 
