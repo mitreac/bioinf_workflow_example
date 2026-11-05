@@ -19,7 +19,7 @@ Nextflow needs Java 17 or newer.
 With conda:
 
 ```bash
-conda env create -f environment.yml
+conda env create -f environment.yml     # use environment_snakemake.yml for Windows to only test snakemake 
 conda activate bio-workflows
 ```
 
