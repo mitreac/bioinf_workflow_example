@@ -7,7 +7,13 @@
 # to this file. We run from the repository folder so that the Snakemake and
 # Nextflow commands look the same and share data/ and scripts/.
 
+import sys
+
 configfile: "snakemake/config.yaml"
+
+# The Python that runs Snakemake. Works on Linux, macOS and Windows, where
+# conda and venv environments have no python3 command.
+PYTHON = sys.executable
 
 # glob_wildcards matches the pattern against the files on disk and returns
 # the values of {sample}: ["A", "B", "C"]. A new file in data/samples/ becomes
@@ -46,7 +52,7 @@ rule filter_reads:
     # would get a `snakemake` object with input, output and params, but then
     # it could not be used outside Snakemake.
     shell:
-        "python3 scripts/filter_reads.py --input {input} --output {output} "
+        "{PYTHON:q} scripts/filter_reads.py --input {input} --output {output} "
         "--min-quality {params.min_quality} 2> {log}"
 
 
@@ -58,7 +64,7 @@ rule read_stats:
         "results/snakemake/stats/{sample}.stats.tsv",
     # {wildcards.sample} gives the value of the wildcard inside the command.
     shell:
-        "python3 scripts/read_stats.py --input {input} "
+        "{PYTHON:q} scripts/read_stats.py --input {input} "
         "--sample {wildcards.sample} --output {output}"
 
 
@@ -73,4 +79,4 @@ rule summarize:
     output:
         "results/snakemake/summary.tsv",
     shell:
-        "python3 scripts/summarize.py --output {output} {input}"
+        "{PYTHON:q} scripts/summarize.py --output {output} {input}"
