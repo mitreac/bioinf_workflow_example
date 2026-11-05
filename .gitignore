@@ -1,0 +1,32 @@
+# Workflow outputs (both tools write here)
+results/
+ 
+# Snakemake state and logs
+.snakemake/
+ 
+# Nextflow work directory, state and logs
+work/
+.nextflow/
+.nextflow.log*
+timeline*.html
+report*.html
+trace*.txt
+dag*.html
+ 
+# Demo leftovers (exercise that copies A.fastq to D.fastq)
+data/samples/D.fastq
+ 
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+ 
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
