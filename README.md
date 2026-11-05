@@ -16,10 +16,6 @@ GitHub issue.
 You need Python 3.10 or newer, Snakemake 8 or newer, and Nextflow 24 or newer.
 Nextflow needs Java 17 or newer.
 
-With GitHub Codespaces nothing has to be installed on your computer. On the
-repository page click Code > Codespaces > Create codespace. The
-`.devcontainer` folder installs all the tools.
-
 With conda:
 
 ```bash
